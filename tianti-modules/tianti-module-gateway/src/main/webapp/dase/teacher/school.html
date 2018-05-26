@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../../static/favicon/favicon.ico">
+    <title>华师大数据学院</title>
+    <link href="../../static/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+    <link href="../../static/css/ui-bootstrap-csp.css" type="text/css" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="school.css" type="text/css">
+</head>
+<body ng-app="school" ng-controller="schoolCtrl">
+
+	<!-- 页头 -->
+    <div id="header" data-ui="header" class="J_header"></div>
+    
+    <div data-ui="pageBanner" class="J_pageBanner"><img src="../../static/cache/1.jpg"></div>
+
+		<div class="person container">
+		    <ul>
+		        <li ng-repeat="teacher in teachers" class="row" style="padding:0px;margin-top:20px;">
+		            <div class="col-md-12 row" style="padding:0px;">
+							<div class="col-sm-4 pull-left">
+						        <img id="showImg" class="img-responsive" src="{{teacher.picture}}" style="width:150px; height: 200px;margin:0 auto;display:block;"
+						         ng-click="chooseFile()" />
+						    </div>
+						    <div class="col-sm-7" style="height:200px;">
+						        <div class="container" style="margin-top:0px;">
+						        	<h1 class="row"><span ng-bind="teacher.name"></span></h1>
+						        </div>
+						        <span ng-bind="teacher.briefInfo"></span>
+						        <a class="btn btn-link" ng-href="{{teacher.href}}" 
+							        type="button" style="left:72%;"
+							        role="button">More...</a>
+						    </div>
+					</div>
+		        </li>
+		    </ul>
+		</div>
+		
+		<div class="text-center" style="clear:both">
+			<uib-pagination total-items="total" ng-model="currentPage" items-per-page = "numPerPage" 
+			max-size="maxSize" class="pagination" first-text="首页" previous-text="上一页" next-text="下一页" 
+			last-text="末页" boundary-links="true" ng-change="pageChange()" force-ellipses="false">
+			</uib-pagination>
+		</div>
+
+	<!-- footer -->
+    <div data-ui="footer" class="J_footer mt40"></div>
+    
+</body>
+<script src="../../static/js/jquery.min.js"></script>
+<script src="../../static/js/angular.js"></script>
+<!-- <script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script> -->
+<script src="../../static/js/bootstrap.min.js"></script>
+<script src="../../static/js/ui-bootstrap-tpls.js"></script>
+<script src="./showTeacher.ctrl.js"></script>
+<script src="school.js" type="text/javascript"></script>
+
+<script src="../../static/js/common.js"></script>
+<script src="../../static/js/config.js"></script>
+
+<script type="text/javascript">
+    window.rootColumnId = jc.param.get("rootColumnId") || 1;
+    window.columnListId = jc.param.get("columnListId");
+</script>
+
+<script type="text/javascript">
+    jc.uiReady = function () {
+
+        var app = document.getElementById("app");
+
+        window.resource("cmsApiColumnList", {
+            rootColumnId: rootColumnId
+        }, function (data) {
+
+            if (!data.length) return false;
+
+
+            if (jc.hasUI("menuList")) {
+                jc.ui.menuList.trigger("setup", data);
+            }
+
+            if (!window.columnListId) {
+                window.columnListId = data[0].id;
+            }
+
+            var columnListIdObject = null;
+            for (var i = 0, l = data.length; i < l; i++) {
+                var curData = data[i];
+                if (curData.id == window.columnListId) {
+                    columnListIdObject = curData;
+                }
+            }
+
+            if (!columnListIdObject) return false;
+
+            if (jc.hasUI("titleStyle2")) {
+                jc.ui.titleStyle2.trigger("setup", {
+                    data_title_text: columnListIdObject.name
+                });
+            }
+
+            var columnId = columnListIdObject.id;
+
+            var titleStyle1 = jc.createDOM({
+                dataUi: "titleStyle2",
+                classname: "J_titleStyle2",
+                dataId: columnId,
+                dataPath: "cmsApiArticleList",
+                dataTitleText: columnListIdObject.name,
+                dataMoreText: "返回>>",
+                dataMoreHref: "javascript: window.router('index',{ rootColumnId : '" + window.rootColumnId + "'} , true);"
+            });
+
+            var textList = jc.createDOM({
+                dataUi: "textList",
+                classname: "J_textList hasBorder",
+                dataId: columnId,
+                dataPath: "cmsApiArticleList",
+                dataPageSize: 20
+            });
+
+
+            app.appendChild(titleStyle1);
+            app.appendChild(textList);
+
+            jc.uiUpdate();
+
+
+        }, false);
+
+    }
+
+</script>
+
+</html>

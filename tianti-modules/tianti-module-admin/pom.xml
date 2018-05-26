@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.jeff.tianti.modules</groupId>
+    <artifactId>tianti-modules</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.jeff.tianti.module.admin</groupId>
+  <artifactId>dase-module-admin</artifactId>
+  <version>${tianti.version}</version>
+  <packaging>war</packaging>
+  <name>dase-module-admin Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+      <dependency>
+			<groupId>com.jeff.tianti.common</groupId>
+			<artifactId>tianti-common</artifactId>
+			<version>${tianti.version}</version>
+	  </dependency>
+      <dependency>
+			<groupId>com.jeff.tianti.org</groupId>
+			<artifactId>tianti-org</artifactId>
+			<version>${tianti.version}</version>
+	  </dependency>
+	  
+	  <dependency>
+			<groupId>com.jeff.tianti.cms</groupId>
+			<artifactId>tianti-cms</artifactId>
+			<version>${tianti.version}</version>
+	  </dependency>
+      <dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20160810</version>
+	  </dependency>
+    <!-- 该jar包引入自本地项目 -->
+    <dependency>
+	  <groupId>org.springside</groupId>  
+	  <artifactId>springside-core</artifactId>  
+	  <version>4.2.2.GA</version>  
+	  <scope>system</scope>  
+	  <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/springside-core-4.2.2.GA.jar</systemPath>  
+	</dependency>
+	<dependency>
+	  <groupId>org.terracotta</groupId>  
+	  <artifactId>statistics</artifactId>  
+	  <version>1.0.2</version>  
+	  <scope>system</scope>  
+	  <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/statistics-1.0.2.jar</systemPath>  
+	</dependency>
+	<dependency>
+	  <groupId>com.jsptags</groupId>  
+	  <artifactId>taglib</artifactId>  
+	  <version>1.0.0</version>  
+	  <scope>system</scope>  
+	  <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/pager-taglib.jar</systemPath>  
+	</dependency>
+	<dependency>
+			<groupId>com.baidu</groupId>
+			<artifactId>ueditor</artifactId>
+			<version>1.1.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/ueditor-1.1.1.jar</systemPath>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+	
+  </dependencies>
+  <build>
+    <finalName>dase-module-admin</finalName>
+  </build>
+</project>

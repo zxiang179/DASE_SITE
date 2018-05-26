@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>华师大数据学院</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="shortcut icon" href="../../static/favicon/favicon.ico">
+    <meta name="keywords" content=""/>
+    <script type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <!-- //Custom Theme files -->
+    <link href="../../static/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+    <link href="" type="text/css" rel="stylesheet" media="all">
+   <link rel="stylesheet" href="../../static/uploadify/uploadify.css"> 
+
+    <!-- Core JavaScript Files -->
+    <style type="text/css">
+        p {
+            color: #5d5d5d;
+            font-size: 14px;
+        }
+
+        body {
+            font-family: Microsoft YaHei;
+        }
+    </style>
+</head>
+<body ng-app="teacherApp" ng-controller="AddTeacherCtrl">
+<div class="container" width="80%">
+<form class="form-inline" id="form">
+    <div class="col-sm-3">
+        <img id="showImg" class="img-responsive" src="{{teacher.pict_url}}" style="width:150px; height: 200px;margin:0 auto;display:block;"
+         ng-click="chooseFile()" />
+        <br><br>
+        <input name="file" data-ngf-select type="file" style="display: none" id="hiddenFile" ng-model="file"
+       	ng-show="false" ngf-max-size="1MB" accept="image/jpeg,image/jpg,image/png" ng-change="imageChange('hiddenFile','showImg')">
+		<button class="btn btn-primary" ng-click="chooseFile()">选择照片</button>
+        <!-- <label ng-show="file!=null" ng-bind="file.name"></label> -->
+        <button class="btn btn-default" ng-click="submitImage()">上传</button>
+        <button class="btn btn-default" ng-click="cancel()">取消</button>
+    </div>
+    <div class="col-sm-9">
+        <div class="form-group" style="width:70%; margin-right:5%;">
+            <label class="col-sm-3 control-label text-right" for="name" style="margin-bottom: 20px;">姓名</label>
+            <input type="text" class="form-control col-sm-6" ng-model="teacher.name">
+        </div>
+        <br><br>
+        <div class="form-group" style="width:70%; margin-right:5%;">
+            <label class="col-sm-3 control-label text-right" for="tel">联系电话</label>
+            <input type="text" class="form-control col-sm-6" ng-model="teacher.briefInfo.tel">
+        </div>
+        <br><br>
+        <div class="form-group" style="width:70%; margin-right:5%;">
+            <label class="col-sm-3 control-label text-right" for="officeHours">办公时间</label>
+            <input type="text" class="form-control col-sm-6" ng-model="teacher.briefInfo.officeHours">
+        </div>
+        <br><br>
+        <div class="form-group" style="width:70%; margin-right:5%;">
+            <label class="col-sm-3 control-label text-right" for="email">电子邮箱</label>
+            <input type="email" class="form-control col-sm-6" ng-model="teacher.briefInfo.email">
+        </div>
+        <br><br>
+        <div class="form-group" style="width:70%; margin-right:5%;">
+            <label class="col-sm-3 control-label text-right" for="officeAddres">办公地点</label>
+            <input type="text" class="form-control col-sm-6" ng-model="teacher.briefInfo.officeAddress">
+        </div>
+        <br><br>
+        <div class="form-group" style="width:70%; margin-right:5%;">
+            <label class="col-sm-3 control-label text-right" for="officeAddres">通讯地址</label>
+            <input type="text" class="form-control col-sm-6" ng-model="teacher.briefInfo.postalAddress">
+        </div>
+        <br><br>
+        <div class="form-group" style="width:70%; margin-right:5%;">
+            <label class="col-sm-3 control-label text-right" for="specInfo">详细信息</label>
+            <script id="specInfo" name="content" class="row col-sm-9" type="text/plain">
+   			</script>
+            <!-- <textarea class="form-control col-sm-6" rows="10" cols="54" ng-model="teacher.specInfo"></textarea> -->
+        </div>
+        <br><br>
+        <div class="form-group" style="width:70%; margin-right:5%;">
+            <label class="col-sm-3 control-label text-right" for="papers">发表论文</label>
+            <script id="papers" name="content" class="row col-sm-9" type="text/plain">
+   			</script>
+            <!-- <textarea class="form-control col-sm-6" rows="10" cols="54" ng-model="teacher.papers"></textarea> -->
+        </div>
+        <br><br>
+        <div class="row">
+            <button class="btn btn-primary col-sm-offset-3" ng-click="submit()">保存</button>
+            <button class="btn btn-default col-sm-offset-1" ng-click="reset()">取消</button>
+        </div>
+        
+
+    </div>
+</form>
+
+</div>
+</body>
+<script src="../../static/js/jquery.min.js"></script>
+<script src="../../static/ueditor/editor_config.js"></script>
+<script src="../../static/ueditor/editor_all.js"></script>
+<script src="../../static/uploadify/jquery.uploadify.js"></script>
+<script>
+	var ueSpecInfo = UE.getEditor('specInfo');
+	var uePapers = UE.getEditor('papers');
+</script>
+<script src="../../static/js/angular.js"></script>
+<script src="../../static/js/ng-file-upload-shim.js"></script>
+<script src="../../static/js/ng-file-upload.js"></script>
+<script src="../../static/js/common.js"></script>
+<script src="../../static/js/config.js"></script>
+<script src="addTeacherCtrl.js"></script>
+</html>

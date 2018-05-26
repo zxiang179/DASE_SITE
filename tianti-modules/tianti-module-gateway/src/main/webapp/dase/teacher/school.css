@@ -1,0 +1,104 @@
+.person{
+    padding: 5% 0px 5.5%;
+}
+
+.person ul{
+    padding-bottom: 2%;
+}
+
+.person li{
+    float: left;
+    width: 50%;
+    padding: 0px 1.25% 3.75%;
+    -webkit-transition: All .3s ease;
+    list-style: none;
+}
+
+.person li .aimg{
+    float: left;
+    width: 28%;
+    position: relative;
+}
+
+.person li .aimg img{
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right:0;
+    bottom: 0;
+    left: 0;
+}
+
+.person li .aimg i{
+    display: block;
+    padding-bottom: 118.75%;
+}
+
+.person li .con{
+    float: right;
+    width: 68%;
+    color: #575757;
+    display: block;
+    cursor: pointer;
+}
+
+.person li .con .p1{
+    color: #000;
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.person li span{
+    width: 100%;
+    display: block;
+    overflow: hidden;
+}
+
+.btn{
+    position: relative;
+    top: 40px;
+}
+
+.nav{
+    text-align: center;
+    /*float: left;*/
+}
+
+
+/*.page{*/
+    /*text-align: center;*/
+    /*!*font-size: 12px;*!*/
+/*}*/
+
+/*.page .current{*/
+    /*display: inline-block;*/
+    /*margin: 0px 1px;*/
+    /*padding: 0px 5px;*/
+    /*height: 22px;*/
+    /*line-height: 22px;*/
+    /*background: #853ec0;*/
+    /*color: #fff;*/
+    /*border: 1px solid #853ec0;*/
+/*}*/
+
+/*.page a {*/
+    /*display: inline-block;*/
+    /*margin: 0px 1px;*/
+    /*padding: 0px 5px;*/
+    /*height: 22px;*/
+    /*line-height: 22px;*/
+    /*border: 1px solid #d5d5d5;*/
+    /*color: #454545;*/
+    /*transition: All .3s ease;*/
+    /*-webkit-transition: All .3s ease;*/
+/*}*/
+:visited{
+    color: #666666;
+}
