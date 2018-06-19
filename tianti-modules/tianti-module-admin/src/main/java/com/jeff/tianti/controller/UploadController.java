@@ -76,7 +76,7 @@ public class UploadController {
 			return null;
 		}
 		String fileName = "";
-		String logImageName = "";
+		String logFileName = "";
 		if (file.isEmpty()) {
 			result = "文件未上传";
 		} else {
@@ -86,15 +86,16 @@ public class UploadController {
 				if(suffix.equalsIgnoreCase(".xls") || suffix.equalsIgnoreCase(".xlsx") || suffix.equalsIgnoreCase(".txt")|| suffix.equalsIgnoreCase(".png")
 						  || suffix.equalsIgnoreCase(".doc") || suffix.equalsIgnoreCase(".docx") || suffix.equalsIgnoreCase(".pdf") 
 						  || suffix.equalsIgnoreCase(".ppt") || suffix.equalsIgnoreCase(".pptx")|| suffix.equalsIgnoreCase(".gif")
+						  || suffix.equalsIgnoreCase(".rar") || suffix.equalsIgnoreCase(".zip")
 						  || suffix.equalsIgnoreCase(".jpg")|| suffix.equalsIgnoreCase(".jpeg")|| suffix.equalsIgnoreCase(".bmp")){
 					// /**使用UUID生成文件名称**/
-					logImageName = UUID.randomUUID().toString() + suffix;
+					logFileName = UUID.randomUUID().toString() + suffix;
 
-					fileName = realPath + File.separator + ATTACH_SAVE_PATH + File.separator + logImageName;
+					fileName = realPath + File.separator + ATTACH_SAVE_PATH + File.separator + logFileName;
 					File restore = new File(fileName);
 					try {
 						file.transferTo(restore);
-						result = "/uploads/attach/" + logImageName;
+						result = "/uploads/attach/" + logFileName;
 					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}

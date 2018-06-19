@@ -126,7 +126,7 @@ public class BaseEntity extends MysqlSequenceIdEntity implements Serializable{
  
     @PreUpdate
     public void preUpdate() {
-    	this.setUpdateDate(new Date());
+//    	this.setUpdateDate(new Date());
     }
 	
 }

@@ -2,692 +2,831 @@
 /// <reference path="config.js" />
 /// <reference path="common.js" />
 
-jc.uiExtend("header", {
-    rootColumnId: jc.param.get("rootColumnId"),
-    $menu: null,
-    updateMenu: function () {
-        var _this = this;
-
-        var html = '';
-
-        window.resource("cmsApiColumnList", {
-            level: 1
-        }, function (data) {
-
-            var menuData = {};
-
-            if (!data.length) return false;
-
-            for (var i = 0, l = data.length; i < l; i++) {
-                var curData = data[i];
-                var spiltPath = curData.path.split("/");
-                var spiltPathRoot = spiltPath[0];
-                if (!menuData[spiltPathRoot]) {
-                    menuData[spiltPathRoot] = [];
-                }
-                menuData[spiltPathRoot].push(curData);
-            }
-
-            _this.$menu.each(function (i, obj) {
-                var $obj = $(obj);
-
-                var dataRootColumnId = $obj.attr("data-root-column-id");
-
-                var curMenuData = menuData[dataRootColumnId];
-
-                if (!curMenuData) return false;
-
-                for (var i = 0, l = curMenuData.length; i < l; i++) {
-                	if(curMenuData[i].code=="jiaoshi")
-                		$obj.append('<li><a onclick="window.router(\'menuAndTeacherList\',{ rootColumnId :\'' + dataRootColumnId + '\' , columnListId : \'' + curMenuData[i].id + '\', type:1 })" href="javascript:;">' + curMenuData[i].name + '</a></li>');
-                	else if(curMenuData[i].code=="boshihou")
-                		$obj.append('<li><a onclick="window.router(\'menuAndTeacherList\',{ rootColumnId :\'' + dataRootColumnId + '\' , columnListId : \'' + curMenuData[i].id + '\', type:2 })" href="javascript:;">' + curMenuData[i].name + '</a></li>');
-                	else if(curMenuData[i].code=="benkesheng")
-                		$obj.append('<li><a onclick="window.router(\'menuAndTeacherList\',{ rootColumnId :\'' + dataRootColumnId + '\' , columnListId : \'' + curMenuData[i].id + '\', type:3 })" href="javascript:;">' + curMenuData[i].name + '</a></li>');
-                	else if(curMenuData[i].code=="yanjiusheng")
-                		$obj.append('<li><a onclick="window.router(\'menuAndTeacherList\',{ rootColumnId :\'' + dataRootColumnId + '\' , columnListId : \'' + curMenuData[i].id + '\', type:4 })" href="javascript:;">' + curMenuData[i].name + '</a></li>');
-                	else
-                		$obj.append('<li><a onclick="window.router(\'menuAndTextList\',{ rootColumnId :\'' + dataRootColumnId + '\' , columnListId : \'' + curMenuData[i].id + '\' })" href="javascript:;">' + curMenuData[i].name + '</a></li>');
-                }
-
-            });
-
-
-        });
-
-
-
-    },
-    template: function (data) {
-        var html = ''
-
-        /* orderNo 排序 */
-        data = window.arraySortASC(data, "orderNo");
-
-        html += '<div class="navbar navbar-default navbar-fixed-top">';
-        html += '<div class="container">';
-        html += '<div class="navbar-header page-scroll">';
-        html += '<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">';
-        html += '<span class="sr-only">Toggle navigation</span>';
-        html += '<span class="icon-bar"></span>';
-        html += '<span class="icon-bar"></span>';
-        html += '<span class="icon-bar"></span>';
-        html += '</button>';
-        html += '<a class="navbar-brand" style="margin-left:0px; href="#page-top"><img class="img-responsive" src="../../static/images/logo1.png" style="float: left;margin-top:-3px" alt=""><img class="img-responsive" style="margin-left: 45px" src="../../static/images/logo.png" alt=""></a>';
-        html += '</div>';
-        html += '<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">';
-        html += '<ul class="nav navbar-nav navbar-right">';
-        html += '<li class="hidden active">';
-        html += '<a href="#page-top"></a>';
-        html += '</li>';
-
-
-        for (var i = 0, l = data.length; i < l; i++) {
-
-            var curData = data[i];
-            var curDataId = curData.id;
-            var curDataName = curData.name;
-
-            var routerName = "";
-            /*if (curDataName == "首页") {
-                routerName = "index";
-            }
-            else {
-                routerName = "menuAndTextlist";
-            }*/
-            
-            if(curDataName == "首页") {
-            	routerName = "index";
-            }else if(curData.code == "shizi" || curData.code == "rencai"){
-            	routerName = "menuAndTeacherList";
-            }else{
-            	routerName = "menuAndTextList";
-            }
-
-            var currentClass = "";
-
-            if ((!this.rootColumnId && i == 0) || this.rootColumnId == curDataId) {
-                currentClass = " current";
-            }
-
-            html += '<li data-current="' + (curDataId) + '" class="dropdown ' + (currentClass) + '">';
-            if(curData.code == "shizi")
-            	html += '<a href="javascript:;" onclick="window.router(\'' + (routerName) + '\',{rootColumnId:\'' + (curDataId) + '\',type:\''+1+'\'},true)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + (curDataName) + '<span class="caret"></span><span class="underline"></span></a>';
-            else if(curData.code == "rencai")
-            	html += '<a href="javascript:;" onclick="window.router(\'' + (routerName) + '\',{rootColumnId:\'' + (curDataId) + '\',type:\''+3+'\'},true)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + (curDataName) + '<span class="caret"></span><span class="underline"></span></a>';
-            else
-            	html += '<a href="javascript:;" onclick="window.router(\'' + (routerName) + '\',{rootColumnId:\'' + (curDataId) + '\'},true)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' + (curDataName) + '<span class="caret"></span><span class="underline"></span></a>';
-            	
-            html += '<ul data-root-column-id="' + curDataId + '" data-level="1" class="dropdown-menu" ' + (i == 0 ? 'style="display:none;"' : "") + '>';
-
-            html += '</ul>';
-
-            html += '</li>';
-
-        }
-
-
-
-        html += '</ul>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-
-
-
-        return html;
-    },
-    setup: function (data) {
-
-        var _this = this;
-
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-            _this.$menu = _this.$element.find(".dropdown-menu");
-            _this.updateMenu();
-        });
-
-        this.$element.on("mouseover", ".dropdown", function () {
-            if (!jc.isMobile) {
-                $(this).addClass("open");
-            }
-        });
-
-        this.$element.on("mouseout", ".dropdown", function () {
-            if (!jc.isMobile) {
-                $(this).removeClass("open");
-            }
-        });
-
-
-    },
-    init: function () {
-        var _this = this;
-        window.resource("cmsApiColumnList", {
-            level: 0
-        }, function (data) {
-            _this.setup(data);
-        }, false);
-
-    }
-
-
-});
-
-jc.uiExtend("footer", {
-    template: function (data) {
-
-        var _this = this;
-
-        var html = '';
-
-
-        html += '<div class="hidden-print">';
-        html += '<div class="container">';
-        html += '<div class="row">';
-        
-        html += '<div class="col-md-4 col-sm-12">';
-        html += '<p class="mt20"><i class="icon"></i>地址：上海市普陀区中山北路3663号</p>'
-        html += '<p><i class="icon"></i>邮箱： dase_ecnu@163.com</p>'
-        html += '</div>';
-
-        html += '<div class="col-md-3 col-sm-12">';
-        html += '<h4>伙伴大学</h4>';
-
-        
-    	html += '<ul class="list-unstyled">';
-		html += '<li><a href="http://www.sysu.edu.cn/2012/cn/index.htm" target="_blank">中山大学</a></li>';
-		html += '<li><a href="http://www.ruc.edu.cn/" target="_blank">中国人民大学</a></li>';
-		html += '<li><a href="http://www.tsinghua.edu.cn/publish/newthu/index.html" target="_blank">清华大学</a></li>';
-        html += '</ul>';
-        html += '</div>';
-        
-        html += '<div class="col-md-3 col-sm-12">';
-        html += '<h4>伙伴企业</h4>';
-
-        
-    	html += '<ul class="list-unstyled">';
-		html += '<li><a href="http://www.bankcomm.com/BankCommSite/default.shtml" target="_blank">交通银行</a></li>';
-		html += '<li><a href="http://www.pingan.com/" target="_blank">中国平安</a></li>';
-		html += '<li><a href="http://www.189.cn/" target="_blank">中国电信</a></li>';
-        html += '</ul>';
-        html += '</div>';
-
-
-        html += '<div class="col-md-2 col-sm-12">';
-        html += '<div class="mt20 text-center">';
-        html += '<img style="width:120px" src="../../static/images/code_1.png">';
-        html += '</div>';
-        html += '</div>';
-
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-
-
-        return html;
-
-
-
-    },
-    setup: function (data) {
-
-        var _this = this;
-
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-        });
-
-    },
-
-    init: function () {
-
-        var _this = this;
-
-        window.resource("cmsApiColumnList", {
-            level: 0
-        }, function (data) {
-            _this.setup(data);
-        }, false);
-
-    }
-
-});
-
+jc
+		.uiExtend(
+				"header",
+				{
+					rootColumnId : jc.param.get("rootColumnId"),
+					$menu : null,
+					updateMenu : function() {
+						var _this = this;
+
+						var html = '';
+
+						window
+								.resource(
+										"cmsApiColumnList",
+										{
+											level : 1
+										},
+										function(data) {
+
+											var menuData = {};
+
+											if (!data.length)
+												return false;
+
+											for (var i = 0, l = data.length; i < l; i++) {
+												var curData = data[i];
+												var spiltPath = curData.path
+														.split("/");
+												var spiltPathRoot = spiltPath[0];
+												if (!menuData[spiltPathRoot]) {
+													menuData[spiltPathRoot] = [];
+												}
+												menuData[spiltPathRoot]
+														.push(curData);
+											}
+
+											_this.$menu
+													.each(function(i, obj) {
+														var $obj = $(obj);
+
+														var dataRootColumnId = $obj
+																.attr("data-root-column-id");
+
+														var curMenuData = menuData[dataRootColumnId];
+
+														if (!curMenuData)
+															return false;
+
+														for (var i = 0, l = curMenuData.length; i < l; i++) {
+															if (curMenuData[i].code == "jiaoshi")
+																$obj
+																		.append('<li><a onclick="window.router(\'menuAndTeacherList\',{ rootColumnId :\''
+																				+ dataRootColumnId
+																				+ '\' , columnListId : \''
+																				+ curMenuData[i].id
+																				+ '\', type:1 })" href="javascript:;">'
+																				+ curMenuData[i].name
+																				+ '</a></li>');
+															else if (curMenuData[i].code == "boshihou")
+																$obj
+																		.append('<li><a onclick="window.router(\'menuAndTeacherList\',{ rootColumnId :\''
+																				+ dataRootColumnId
+																				+ '\' , columnListId : \''
+																				+ curMenuData[i].id
+																				+ '\', type:2 })" href="javascript:;">'
+																				+ curMenuData[i].name
+																				+ '</a></li>');
+															else if (curMenuData[i].code == "benkesheng")
+																$obj
+																		.append('<li><a onclick="window.router(\'menuAndTeacherList\',{ rootColumnId :\''
+																				+ dataRootColumnId
+																				+ '\' , columnListId : \''
+																				+ curMenuData[i].id
+																				+ '\', type:3 })" href="javascript:;">'
+																				+ curMenuData[i].name
+																				+ '</a></li>');
+															else if (curMenuData[i].code == "yanjiusheng")
+																$obj
+																		.append('<li><a onclick="window.router(\'menuAndTeacherList\',{ rootColumnId :\''
+																				+ dataRootColumnId
+																				+ '\' , columnListId : \''
+																				+ curMenuData[i].id
+																				+ '\', type:4 })" href="javascript:;">'
+																				+ curMenuData[i].name
+																				+ '</a></li>');
+															else
+																$obj
+																		.append('<li><a onclick="window.router(\'menuAndTextList\',{ rootColumnId :\''
+																				+ dataRootColumnId
+																				+ '\' , columnListId : \''
+																				+ curMenuData[i].id
+																				+ '\' })" href="javascript:;">'
+																				+ curMenuData[i].name
+																				+ '</a></li>');
+														}
+
+													});
+
+										});
+
+					},
+					template : function(data) {
+						var html = ''
+
+						/* orderNo 排序 */
+						data = window.arraySortASC(data, "orderNo");
+
+						html += '<div class="navbar navbar-default navbar-fixed-top">';
+						html += '<div class="container">';
+						html += '<div class="navbar-header page-scroll">';
+						html += '<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">';
+						html += '<span class="sr-only">Toggle navigation</span>';
+						html += '<span class="icon-bar"></span>';
+						html += '<span class="icon-bar"></span>';
+						html += '<span class="icon-bar"></span>';
+						html += '</button>';
+						html += '<a class="navbar-brand" style="margin-left:0px; href="#page-top"><img class="img-responsive" src="../../static/images/logo1.png" style="float: left;margin-top:-3px" alt=""><img class="img-responsive" style="margin-left: 45px" src="../../static/images/logo.png" alt=""></a>';
+						html += '</div>';
+						html += '<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">';
+						html += '<ul class="nav navbar-nav navbar-right">';
+						html += '<li class="hidden active">';
+						html += '<a href="#page-top"></a>';
+						html += '</li>';
+
+						for (var i = 0, l = data.length; i < l; i++) {
+
+							var curData = data[i];
+							var curDataId = curData.id;
+							var curDataName = curData.name;
+
+							var routerName = "";
+							/*
+							 * if (curDataName == "首页") { routerName = "index"; }
+							 * else { routerName = "menuAndTextlist"; }
+							 */
+
+							if (curDataName == "首页") {
+								routerName = "index";
+							} else if (curData.code == "shizi"
+									|| curData.code == "rencai") {
+								routerName = "menuAndTeacherList";
+							} else {
+								routerName = "menuAndTextList";
+							}
+
+							var currentClass = "";
+
+							if ((!this.rootColumnId && i == 0)
+									|| this.rootColumnId == curDataId) {
+								currentClass = " current";
+							}
+
+							html += '<li data-current="' + (curDataId)
+									+ '" class="dropdown ' + (currentClass)
+									+ '">';
+							if (curData.code == "shizi")
+								html += '<a href="javascript:;" onclick="window.router(\''
+										+ (routerName)
+										+ '\',{rootColumnId:\''
+										+ (curDataId)
+										+ '\',type:\''
+										+ 1
+										+ '\'},true)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'
+										+ (curDataName)
+										+ '<span class="caret"></span><span class="underline"></span></a>';
+							else if (curData.code == "rencai")
+								html += '<a href="javascript:;" onclick="window.router(\''
+										+ (routerName)
+										+ '\',{rootColumnId:\''
+										+ (curDataId)
+										+ '\',type:\''
+										+ 3
+										+ '\'},true)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'
+										+ (curDataName)
+										+ '<span class="caret"></span><span class="underline"></span></a>';
+							else
+								html += '<a href="javascript:;" onclick="window.router(\''
+										+ (routerName)
+										+ '\',{rootColumnId:\''
+										+ (curDataId)
+										+ '\'},true)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'
+										+ (curDataName)
+										+ '<span class="caret"></span><span class="underline"></span></a>';
+
+							html += '<ul data-root-column-id="' + curDataId
+									+ '" data-level="1" class="dropdown-menu" '
+									+ (i == 0 ? 'style="display:none;"' : "")
+									+ '>';
+
+							/*
+							 * html += '<li><a href="javascript:;">学校简介</a></li>';
+							 * html += '<li><a href="javascript:;">学校领导</a></li>';
+							 * html += '<li><a href="javascript:;">校长寄语</a></li>';
+							 * html += '<li><a href="javascript:;">组织机构</a></li>';
+							 * html += '<li><a href="javascript:;">办学成就</a></li>';
+							 * html += '<li><a href="javascript:;">领导关怀</a></li>';
+							 * html += '<li><a href="javascript:;">校园风光</a></li>';
+							 */
+
+							html += '</ul>';
+
+							html += '</li>';
+
+						}
+
+						html += '</ul>';
+						html += '</div>';
+						html += '</div>';
+						html += '</div>';
+
+						return html;
+					},
+					setup : function(data) {
+
+						var _this = this;
+
+						this.getTemplate(data,
+								function(html) {
+									_this.$element.html(html);
+									_this.$menu = _this.$element
+											.find(".dropdown-menu");
+									_this.updateMenu();
+								});
+
+						this.$element.on("mouseover", ".dropdown", function() {
+							if (!jc.isMobile) {
+								$(this).addClass("open");
+							}
+						});
+
+						this.$element.on("mouseout", ".dropdown", function() {
+							if (!jc.isMobile) {
+								$(this).removeClass("open");
+							}
+						});
+
+					},
+					init : function() {
+						var _this = this;
+						window.resource("cmsApiColumnList", {
+							level : 0
+						}, function(data) {
+							_this.setup(data);
+						}, false);
+
+					}
+
+				});
+
+jc
+		.uiExtend(
+				"footer",
+				{
+					template : function(data) {
+
+						var _this = this;
+
+						var html = '';
+
+						html += '<div class="hidden-print">';
+						html += '<div class="container">';
+						html += '<div class="row">';
+
+						html += '<div class="col-md-4 col-sm-12">';
+						html += '<p class="mt20"><i class="icon"></i>地址：上海市普陀区中山北路3663号</p>'
+						html += '<p><i class="icon"></i>邮箱： dase@dase.ecnu.edu.cn</p>'
+						html += '</div>';
+
+						html += '<div class="col-md-3 col-sm-12">';
+						
+						html += '</div>';
+
+						html += '<div class="col-md-3 col-sm-12">';
+						
+						html += '</div>';
+						
+
+						html += '<div class="col-md-2 col-sm-12">';
+						html += '<div class="mt20 text-center">';
+						html += '<img style="width:120px" src="../../static/images/code_1.png">';
+						// html += '<p>(微信打赏)</p>';
+						html += '</div>';
+						html += '</div>';
+
+						html += '</div>';
+						html += '</div>';
+						/*
+						 * html += '<div class="copy-right">'; html += '<span>©
+						 * 2013-2017</span>'; html += '版权所有 天梯 Copyright © 1998 -
+						 * 2017 Tencent. All Rights Reserved'; html += '<span>粤公网安备11010802014853</span>';
+						 * html += '</div>';
+						 */
+						html += '</div>';
+
+						/*
+						 * <div class="hidden-print"> <div class="container">
+						 * <div class="row"> <div class="col-md-5 col-sm-12">
+						 * <h4>关于 BootCDN</h4> <p>BootCDN 是 <a
+						 * href="http://www.bootcss.com/"
+						 * target="_blank">Bootstrap 中文网</a>和<a
+						 * href="https://www.upyun.com/" target="_blank">又拍云</a>共同支持并维护的前端开源项目免费
+						 * CDN 服务，由<a href="https://www.upyun.com/"
+						 * target="_blank">又拍云</a>提供全部 CDN 支持，致力于为
+						 * Bootstrap、jQuery、Angular 一样优秀的前端开源项目提供稳定、快速的免费 CDN
+						 * 服务。BootCDN 所收录的开源项目主要同步于 <a
+						 * href="https://github.com/cdnjs/cdnjs"
+						 * target="_blank">cdnjs</a> 仓库。</p><p>自2013年10月31日上线以来已经为上万家网站提供了稳定、可靠的免费
+						 * CDN 服务。</p><p>反馈或建议请发送邮件至：cdn@bootcss.com</p>
+						 * </div> <div class="col-md-2 col-sm-12"> <h4>友情链接</h4>
+						 * <ul class="list-unstyled"> <li><a
+						 * href="http://www.bootcss.com/"
+						 * target="_blank">Bootstrap 中文网</a></li> <li><a
+						 * href="http://www.ghostchina.com/"
+						 * target="_blank">Ghost 中国</a></li> <li><a
+						 * href="http://www.golaravel.com/"
+						 * target="_blank">Laravel 中文网</a></li> <li><a
+						 * href="http://www.jquery123.com/"
+						 * target="_blank">jQuery 中文 API</a></li> <li><a
+						 * href="http://pkg.phpcomposer.com/"
+						 * target="_blank">Packagist 中国镜像</a></li> <li><a
+						 * href="http://www.phpcomposer.com/"
+						 * target="_blank">Composer 中文网</a></li> </ul> </div>
+						 * <div class="col-md-3 col-sm-12"> <h4>我们用到的技术</h4>
+						 * <ul class="list-unstyled list-inline"> <li><a
+						 * href="http://www.bootcss.com/"
+						 * target="_blank">Bootstrap</a></li> <li><a
+						 * href="http://www.ghostchina.com/"
+						 * target="_blank">Ghost</a></li> <li><a
+						 * href="http://www.jquery123.com/"
+						 * target="_blank">jQuery</a></li> <li><a
+						 * href="http://babeljs.cn/" target="_blank">Babeljs</a></li>
+						 * <li><a href="http://lodashjs.com/"
+						 * target="_blank">Lodash</a></li> <li><a
+						 * href="http://www.nodeapp.cn/" target="_blank">Node</a></li>
+						 * <li><a href="http://www.gruntjs.net/"
+						 * target="_blank">Grunt</a></li> <li><a
+						 * href="http://www.gulpjs.com.cn/" target="_blank">Gulp</a></li>
+						 * <li><a href="http://www.npmjs.com.cn/"
+						 * target="_blank">NPM</a></li> <li><a
+						 * href="https://webpackjs.com/" target="_blank">webpack</a></li>
+						 * </ul> </div> <div class="col-md-2 col-sm-12"> <h4>动力源自</h4><p>
+						 * <a href="https://www.upyun.com/"
+						 * style="border-bottom: none" target="_blank"><img
+						 * src="/assets/img/Upyun_LOGO_300.png" style="width:
+						 * 120px" alt="又拍云存储"></a> </p> </div> </div> </div>
+						 * <div class="copy-right"> <span>© 2013-2017</span> <a
+						 * href="http://www.miibeian.gov.cn/"
+						 * target="_blank">京ICP备11008151号</a>
+						 * <span>京公网安备11010802014853</span> </div> </div>
+						 */
+
+						return html;
+
+					},
+					setup : function(data) {
+
+						var _this = this;
+
+						this.getTemplate(data, function(html) {
+							_this.$element.html(html);
+						});
+
+					},
+
+					init : function() {
+
+						var _this = this;
+
+						window.resource("cmsApiColumnList", {
+							level : 0
+						}, function(data) {
+							_this.setup(data);
+						}, false);
+
+					}
+
+				});
 
 jc.uiExtend("banner", {
-    ajaxData: {
-        columnId: null,
-        pageSize: 0,
-        currentPage: 1
-    },
-    setAttr: function (opt) {
-        this.$element.attr(opt);
-    },
-    update: function () {
-        var _this = this;
+	ajaxData : {
+		columnId : null,
+		pageSize : 0,
+		currentPage : 1
+	},
+	setAttr : function(opt) {
+		this.$element.attr(opt);
+	},
+	update : function() {
+		var _this = this;
 
-        this.ajaxData.columnId = this.$element.attr("data-id");
-        this.ajaxData.pageSize = this.$element.attr("data-page-size") || 10;
+		this.ajaxData.columnId = this.$element.attr("data-id");
+		this.ajaxData.pageSize = this.$element.attr("data-page-size") || 10;
 
-        var data_path = this.$element.attr("data-path");
+		var data_path = this.$element.attr("data-path");
 
-        if (!this.ajaxData.columnId || !data_path) return;
+		if (!this.ajaxData.columnId || !data_path)
+			return;
 
-        window.resource(data_path, this.ajaxData, function (data) {
-            _this.setup(data);
-        });
+		window.resource(data_path, this.ajaxData, function(data) {
+			_this.setup(data);
+		});
 
+	},
+	setup : function(data) {
 
-    },
-    setup: function (data) {
+		var _this = this;
+		this.getTemplate(data, function(html) {
+			_this.$element.html(html);
+			$("#" + this.id).carousel({
+				pause : "hover",
+				interval : 6000
+			});
+		});
 
-        var _this = this;
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-            $("#" + this.id).carousel({
-                pause: "hover",
-                interval: 6000
-            });
-        });
-
-    },
-    init: function () {
-        this.update();
-    }
+	},
+	init : function() {
+		this.update();
+	}
 
 });
-
 
 jc.uiExtend("titleStyle1", {
-    template: function (data) {
-        var html = '';
+	template : function(data) {
+		var html = '';
 
-        html += '<div class="page-header clearfix">';
-        html += '<div class="pull-left">';
-        html += '<i></i>';
-        html += '<h4>' + this.getString(data.data_title_text) + '</h4>';
-        html += '</div>';
-        html += '<div class="pull-right"><a href="' + this.getString(data.data_more_href) + '" title="' + this.getString(data.data_more_text) + '">' + this.getString(data.data_more_text) + '</a></div>';
-        html += '</div>';
+		html += '<div class="page-header clearfix">';
+		html += '<div class="pull-left">';
+		html += '<i></i>';
+		html += '<h4>' + this.getString(data.data_title_text) + '</h4>';
+		html += '</div>';
+		html += '<div class="pull-right"><a href="'
+				+ this.getString(data.data_more_href) + '" title="'
+				+ this.getString(data.data_more_text) + '">'
+				+ this.getString(data.data_more_text) + '</a></div>';
+		html += '</div>';
 
-        return html;
+		return html;
 
-    },
-    setup: function (data) {
+	},
+	setup : function(data) {
 
-        var _this = this;
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-        });
+		var _this = this;
+		this.getTemplate(data, function(html) {
+			_this.$element.html(html);
+		});
 
-    },
-    init: function () {
-        var data_title_text = this.$element.attr("data-title-text");
-        var data_more_text = this.$element.attr("data-more-text");
-        var data_more_href = this.$element.attr("data-more-href");
+	},
+	init : function() {
+		var data_title_text = this.$element.attr("data-title-text");
+		var data_more_text = this.$element.attr("data-more-text");
+		var data_more_href = this.$element.attr("data-more-href");
 
-        var data = {
-            data_title_text: data_title_text,
-            data_more_text: data_more_text,
-            data_more_href: data_more_href
-        }
+		var data = {
+			data_title_text : data_title_text,
+			data_more_text : data_more_text,
+			data_more_href : data_more_href
+		}
 
-        this.setup(data);
-    }
+		this.setup(data);
+	}
 
 });
-
 
 jc.uiExtend("titleStyle2", {
-    template: function (data) {
-        var html = '';
+	template : function(data) {
+		var html = '';
 
-        html += '<div class="page-header clearfix">';
-        html += '<div class="pull-left">';
-        html += '<i></i>';
-        html += '<h4>' + this.getString(data.data_title_text) + '</h4>';
-        html += '</div>';
-        if (this.getString(data.data_title_text)) {
-            html += '<div class="pull-right"><a href="' + this.getString(data.data_more_href) + '" title="' + this.getString(data.data_more_text) + '">' + this.getString(data.data_more_text) + '</a></div>';
-        }
-        html += '</div>';
+		html += '<div class="page-header clearfix">';
+		html += '<div class="pull-left">';
+		html += '<i></i>';
+		html += '<h4>' + this.getString(data.data_title_text) + '</h4>';
+		html += '</div>';
+		if (this.getString(data.data_title_text)) {
+			html += '<div class="pull-right"><a href="'
+					+ this.getString(data.data_more_href) + '" title="'
+					+ this.getString(data.data_more_text) + '">'
+					+ this.getString(data.data_more_text) + '</a></div>';
+		}
+		html += '</div>';
 
-        return html;
+		return html;
 
-    },
-    setup: function (data) {
+	},
+	setup : function(data) {
 
-        var _this = this;
+		var _this = this;
 
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-        });
+		this.getTemplate(data, function(html) {
+			_this.$element.html(html);
+		});
 
-    },
-    init: function () {
+	},
+	init : function() {
 
-        var data_title_text = this.$element.attr("data-title-text");
-        var data_more_text = this.$element.attr("data-more-text");
-        var data_more_href = this.$element.attr("data-more-href");
+		var data_title_text = this.$element.attr("data-title-text");
+		var data_more_text = this.$element.attr("data-more-text");
+		var data_more_href = this.$element.attr("data-more-href");
 
-        var data = {
-            data_title_text: data_title_text,
-            data_more_text: data_more_text,
-            data_more_href: data_more_href
-        }
+		var data = {
+			data_title_text : data_title_text,
+			data_more_text : data_more_text,
+			data_more_href : data_more_href
+		}
 
-        this.setup(data);
+		this.setup(data);
 
-    }
+	}
 
 });
-
 
 jc.uiExtend("textList", {
-    ajaxData: {
-        columnId: null,
-        pageSize: 0,
-        currentPage: 1
-    },
-    change: function (index, panel, _this) {
-        _this.ajaxData.currentPage = index + 1;
-        _this.update();
-    },
-    update: function () {
-        var _this = this;
+	ajaxData : {
+		columnId : null,
+		pageSize : 0,
+		currentPage : 1
+	},
+	change : function(index, panel, _this) {
+		_this.ajaxData.currentPage = index + 1;
+		_this.update();
+	},
+	update : function() {
+		var _this = this;
 
+		this.ajaxData.columnId = this.$element.attr("data-id");
+		this.ajaxData.pageSize = this.$element.attr("data-page-size") || 10;
+		var data_path = this.$element.attr("data-path");
 
-        this.ajaxData.columnId = this.$element.attr("data-id");
-        this.ajaxData.pageSize = this.$element.attr("data-page-size") || 10;
-        var data_path = this.$element.attr("data-path");
+		window.resource(data_path, this.ajaxData, function(data) {
+			if (data.totalCount == 1) {
+				rootColumnId = data.list[0].rootColumnInfo.id;
+				columnListId = data.list[0].columnInfo.id;
+				articleId = data.list[0].id;
+				window.router('menuAndDetail', {
+					rootColumnId : rootColumnId,
+					columnListId : columnListId,
+					articleId : articleId
+				});
+			} else {
+				_this.setup(data);
+				_this.$page.pagination(data.totalCount, {
+					proxy : _this,
+					num_edge_entries : 1, // 边缘页数
+					num_display_entries : 6, // 主体页数
+					callback : _this.change,
+					items_per_page : _this.ajaxData.pageSize, // 每页显示1项
+					prev_text : "前一页",
+					next_text : "后一页",
+					current_page : _this.ajaxData.currentPage - 1
+				});
+				if (data.list.length < 1) {
+					this.$page.hide();
+				}
+			}
+		});
 
+	},
+	setup : function(data) {
 
-        window.resource(data_path, this.ajaxData, function (data) {
-            _this.setup(data);
-            _this.$page.pagination(data.totalCount, {
-                proxy: _this,
-                num_edge_entries: 1, //边缘页数
-                num_display_entries: 6, //主体页数
-                callback: _this.change,
-                items_per_page: _this.ajaxData.pageSize, //每页显示1项
-                prev_text: "前一页",
-                next_text: "后一页",
-                current_page: _this.ajaxData.currentPage - 1
-            });
-            if (data.list.length < 1) {
-                this.$page.hide();
-            }
-        });
+		var _this = this;
 
+		var id = this.$element.attr("data-id");
 
+		if (id) {
+			data.id = id;
+		}
 
-    },
-    setup: function (data) {
+		_this.getTemplate(data, function(html) {
+			_this.$list.html(html);
 
-        var _this = this;
+		});
 
-        var id = this.$element.attr("data-id");
+	},
+	init : function() {
 
-        if (id) {
-            data.id = id;
-        }
+		this.$element.append(jc.createDOM({
+			classname : "t_list"
+		}));
+		this.$element.append(jc.createDOM({
+			classname : "t_page"
+		}));
 
-        _this.getTemplate(data, function (html) {
-            _this.$list.html(html);
+		this.$list = this.$element.find(".t_list");
+		this.$page = this.$element.find(".t_page");
 
-        });
-
-
-
-    },
-    init: function () {
-
-        this.$element.append(jc.createDOM({ classname: "t_list" }));
-        this.$element.append(jc.createDOM({ classname: "t_page" }));
-
-        this.$list = this.$element.find(".t_list");
-        this.$page = this.$element.find(".t_page");
-
-
-        this.update();
-    }
+		this.update();
+	}
 
 });
-
 
 jc.uiExtend("mediaList", {
-    setup: function (data) {
+	setup : function(data) {
 
-        var _this = this;
+		var _this = this;
 
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-        });
+		this.getTemplate(data, function(html) {
+			_this.$element.html(html);
+		});
 
-    },
-    init: function () {
+	},
+	init : function() {
 
-        this.setup();
+		this.setup();
 
-    }
+	}
 
 });
-
 
 jc.uiExtend("imageList", {
-    setup: function (data) {
+	setup : function(data) {
 
-        var _this = this;
+		var _this = this;
 
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-        });
+		this.getTemplate(data, function(html) {
+			_this.$element.html(html);
+		});
 
-    },
-    init: function () {
+	},
+	init : function() {
 
-        this.setup();
+		this.setup();
 
-    }
+	}
 
 });
-
-
 
 jc.uiExtend("pageBanner", {
-    init: function () {
-        this.$element.html('<img src="../../static/cache/1.jpg" />');
-    }
+	init : function() {
+		this.$element.html('<img src="../../static/cache/1.jpg" />');
+	}
 });
-
-
 
 jc.uiExtend("menuList", {
-    setup: function (data) {
+	setup : function(data) {
 
-        var _this = this;
+		var _this = this;
 
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-        });
+		this.getTemplate(data, function(html) {
+			_this.$element.html(html);
+		});
 
-    },
-    init: function () {
+	},
+	init : function() {
 
-
-    }
+	}
 
 });
 
+jc
+		.uiExtend(
+				"alert",
+				{
+					template : function(str, title, btnText) {
+						var html = '';
 
+						html += '<div class="modal-dialog" role="document">';
+						html += '<div class="modal-content">';
+						html += '<div class="modal-header">';
+						html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+						html += '<h4 class="modal-title" id="gridSystemModalLabel">'
+								+ (title || '温馨提示') + '</h4>';
+						html += '</div>';
+						html += '<div class="modal-body">';
+						html += str;
+						html += '</div>';
+						html += '<div class="modal-footer text-center">';
+						html += '<div class="text-center">';
+						html += '<button type="button" class="btn btn-primary" data-dismiss="modal" data-success="true">'
+								+ (btnText || '我知道了') + '</button>';
+						html += '</div>';
+						html += '</div>';
+						html += '</div>';
+						html += '</div>';
 
+						return html;
 
-jc.uiExtend("alert", {
-    template: function (str, title, btnText) {
-        var html = '';
+					},
+					show : function(str, fn, title, btnText) {
 
-        html += '<div class="modal-dialog" role="document">';
-        html += '<div class="modal-content">';
-        html += '<div class="modal-header">';
-        html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-        html += '<h4 class="modal-title" id="gridSystemModalLabel">' + (title || '温馨提示') + '</h4>';
-        html += '</div>';
-        html += '<div class="modal-body">';
-        html += str;
-        html += '</div>';
-        html += '<div class="modal-footer text-center">';
-        html += '<div class="text-center">';
-        html += '<button type="button" class="btn btn-primary" data-dismiss="modal" data-success="true">' + (btnText || '我知道了') + '</button>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
+						this.fn = fn ? fn : null;
 
+						this.$element.html(this.template(str, title, btnText));
 
-        return html;
+						this.$element.modal('show');
 
-    },
-    show: function (str, fn, title, btnText) {
+					},
+					init : function() {
+						var _this = this;
 
-        this.fn = fn ? fn : null;
+						this.$element.on("click", "[data-success='true']",
+								function(event) {
+									if (_this.fn)
+										_this.fn(true);
+								});
+					}
+				});
 
-        this.$element.html(this.template(str, title, btnText));
+jc
+		.uiExtend(
+				"confirm",
+				{
+					fn : null,
+					template : function(str, title, btnCancelText,
+							btnSuccessText) {
+						var html = '';
 
-        this.$element.modal('show');
+						html += '<div class="modal-dialog" role="document">';
+						html += '<div class="modal-content">';
+						html += '<div class="modal-header">';
+						html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+						html += '<h4 class="modal-title" id="gridSystemModalLabel">'
+								+ (title || '询问') + '</h4>';
+						html += '</div>';
+						html += '<div class="modal-body">';
+						html += str;
+						html += '</div>';
+						html += '<div class="modal-footer text-center">';
+						html += '<button type="button" class="btn btn-default" data-dismiss="modal" data-cancel="true">'
+								+ (btnCancelText || '取消') + '</button>';
+						html += '<button type="button" class="btn btn-primary" data-dismiss="modal" data-success="true">'
+								+ (btnSuccessText || '我知道了') + '</button>';
+						html += '</div>';
+						html += '</div>';
+						html += '</div>';
 
-    },
-    init: function () {
-        var _this = this;
+						return html;
 
-        this.$element.on("click", "[data-success='true']", function (event) {
-            if (_this.fn) _this.fn(true);
-        });
-    }
-});
+					},
+					show : function(str, title, fn, btnCancelText,
+							btnSuccessText) {
 
+						this.fn = fn ? fn : null;
 
+						this.$element.html(this.template(str, title,
+								btnCancelText, btnSuccessText));
 
+						this.$element.modal('show');
 
-jc.uiExtend("confirm", {
-    fn: null,
-    template: function (str, title, btnCancelText, btnSuccessText) {
-        var html = '';
+					},
+					init : function() {
 
-        html += '<div class="modal-dialog" role="document">';
-        html += '<div class="modal-content">';
-        html += '<div class="modal-header">';
-        html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-        html += '<h4 class="modal-title" id="gridSystemModalLabel">' + (title || '询问') + '</h4>';
-        html += '</div>';
-        html += '<div class="modal-body">';
-        html += str;
-        html += '</div>';
-        html += '<div class="modal-footer text-center">';
-        html += '<button type="button" class="btn btn-default" data-dismiss="modal" data-cancel="true">' + (btnCancelText || '取消') + '</button>';
-        html += '<button type="button" class="btn btn-primary" data-dismiss="modal" data-success="true">' + (btnSuccessText || '我知道了') + '</button>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
+						var _this = this;
 
+						this.$element.on("click", "[data-cancel='true']",
+								function(event) {
+									if (_this.fn)
+										_this.fn(false);
+								});
 
-        return html;
+						this.$element.on("click", "[data-success='true']",
+								function(event) {
+									if (_this.fn)
+										_this.fn(true);
+								});
 
-    },
-    show: function (str, title, fn, btnCancelText, btnSuccessText) {
-
-        this.fn = fn ? fn : null;
-
-        this.$element.html(this.template(str, title, btnCancelText, btnSuccessText));
-
-        this.$element.modal('show');
-
-    },
-    init: function () {
-
-        var _this = this;
-
-        this.$element.on("click", "[data-cancel='true']", function (event) {
-            if (_this.fn) _this.fn(false);
-        });
-
-        this.$element.on("click", "[data-success='true']", function (event) {
-            if (_this.fn) _this.fn(true);
-        });
-
-    }
-});
-
+					}
+				});
 
 jc.uiExtend("detail", {
-    id: null,
-    setup: function (data) {
+	id : null,
+	setup : function(data) {
 
-        var _this = this;
+		var _this = this;
 
-        this.id = data.id;
+		this.id = data.article.id;
 
-        this.articleDate = jc.tools.formatDate(data.createDate, 'yyyy-MM-dd hh:mm:ss');
+		this.articleDate = jc.tools.formatDate(data.article.createDate,
+				'yyyy-MM-dd hh:mm:ss');
 
-        this.getTemplate(data, function (html) {
-            _this.$element.html(html);
-        });
+		this.getTemplate(data, function(html) {
+			_this.$element.html(html);
+		});
 
-    },
-    next: function () {
+	},
+	next : function() {
 
-        var _this = this;
+		var _this = this;
 
-        window.resource("cmsApiArticleNext", {
-            columnId: window.columnListId,
-            articleDate: this.articleDate,
-            currentArticleId: this.id
-        }, function (data) {
-            if (!data) {
-                jc.ui.alert.trigger("show", "没有下一篇了");
-            }
-            else {
-                if (window.detailPrev) window.detailNext(data.id);
-            }
+		window.resource("cmsApiArticleNext", {
+			columnId : window.columnListId,
+			articleDate : this.articleDate,
+			currentArticleId : this.id
+		}, function(data) {
+			if (!data) {
+				jc.ui.alert.trigger("show", "没有下一篇了");
+			} else {
+				if (window.detailPrev)
+					window.detailNext(data.id);
+			}
 
-        });
+		});
 
-    },
-    prev: function () {
+	},
+	prev : function() {
 
-        var _this = this;
+		var _this = this;
 
-        window.resource("cmsApiArticlePre", {
-            columnId: window.columnListId,
-            articleDate: this.articleDate,
-            currentArticleId: this.id
-        }, function (data) {
-            if (!data) {
-                jc.ui.alert.trigger("show", "没有上一篇了");
-            }
-            else {
-                if (window.detailPrev) window.detailPrev(data.id);
-            }
+		window.resource("cmsApiArticlePre", {
+			columnId : window.columnListId,
+			articleDate : this.articleDate,
+			currentArticleId : this.id
+		}, function(data) {
+			if (!data) {
+				jc.ui.alert.trigger("show", "没有上一篇了");
+			} else {
+				if (window.detailPrev)
+					window.detailPrev(data.id);
+			}
 
-        });
+		});
 
-    },
-    init: function () {
+	},
+	init : function() {
 
-        var _this = this;
+		var _this = this;
 
-        this.$element.on("click", "a", function () {
-            var $this = $(this);
-            var type = $this.attr("data-type");
-            if (type == "prev") {
-                _this.prev();
-            }
-            else if (type == "next") {
-                _this.next();
-            }
+		this.$element.on("click", "a", function() {
+			var $this = $(this);
+			var type = $this.attr("data-type");
+			if (type == "prev") {
+				_this.prev();
+			} else if (type == "next") {
+				_this.next();
+			}
 
-        });
+		});
 
-    }
+	}
 });
-
