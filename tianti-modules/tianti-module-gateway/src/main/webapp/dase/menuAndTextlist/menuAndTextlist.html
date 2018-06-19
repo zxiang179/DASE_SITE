@@ -78,7 +78,7 @@
             window.resource("cmsApiColumnList", {
                 rootColumnId: rootColumnId
             }, function (data) {
-
+            	console.log(data)
                 if (!data.length) return false;
 
 
@@ -93,6 +93,7 @@
                 var columnListIdObject = null;
                 for (var i = 0, l = data.length; i < l; i++) {
                     var curData = data[i];
+                    console.log(curData)
                     if (curData.id == window.columnListId) {
                         columnListIdObject = curData;
                     }
@@ -128,7 +129,12 @@
 
 
                 app.appendChild(titleStyle1);
-                app.appendChild(textList);
+                if(textList.length()==1){
+                	
+                }else
+                	app.appendChild(textList);
+                
+                console.log('123');
 
                 jc.uiUpdate();
 

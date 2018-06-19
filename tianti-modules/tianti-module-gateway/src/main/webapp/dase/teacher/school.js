@@ -39,8 +39,12 @@ function schoolCtrl($scope, $http) {
             for(var i=0;i<vm.teachers.length;i++){
     			vm.teachers[i].briefInfo = JSON.parse(vm.teachers[i].briefInfo);
     			var content = vm.teachers[i].briefInfo;
-    			content = "联系电话："+vm.teachers[i].briefInfo.tel+", 办公时间："+vm.teachers[i].briefInfo.officeHours+", 电子邮件："+vm.teachers[i].briefInfo.email+" ,办公地点："+vm.teachers[i].briefInfo.officeAddress+" ,通讯地址："+vm.teachers[i].briefInfo.postalAddress;
+    			if(vm.teachers[i].briefInfo.tel==undefined){
+    				vm.teachers[i].briefInfo.tel = "无";
+    			}
+    			content = "联系电话："+vm.teachers[i].briefInfo.tel+"\n 办公时间："+vm.teachers[i].briefInfo.officeHours+", 电子邮件："+vm.teachers[i].briefInfo.email+" ,办公地点："+vm.teachers[i].briefInfo.officeAddress+" ,通讯地址："+vm.teachers[i].briefInfo.postalAddress;
     			content = content.substring(0,60)+"...";
+    			vm.teachers[i].tel = "联系电话："+vm.teachers[i].briefInfo.tel;
     			vm.teachers[i].briefInfo = content;
     			vm.getImage(vm.teachers[i].pict_url,vm.teachers[i]);
     			vm.teachers[i].href = window.server+"dase-module-gateway/dase/teacher/single_teacher.html?teacherId="+vm.teachers[i].id;

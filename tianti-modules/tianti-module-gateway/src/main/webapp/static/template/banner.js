@@ -27,7 +27,7 @@
 
         html += '<div class="item ' + (i == 0 ? 'active' : '') + '">';
         var coverImageUrl = list[i].coverImageUrl;
-        html += '<a href="javascript:;"><img src="' + (coverImageUrl ? window.serverUploadPath + coverImageUrl : "") + '" /></a>';
+        html += '<img src="' + (coverImageUrl ? window.serverUploadPath + coverImageUrl : "") + '" />';
         html += '</div>';
     }
 
