@@ -108,18 +108,16 @@
 			Upload
 					.upload(
 							{
-								url : window.server
-										+ "tianti-module-interface/teacher/upload-attach-file",
+								url : window.serverUploadPath
+										+ "/upload/uploadAttach",
 								data : param,
 								method : 'post',
 								arrayKey : ''
 							}).then(
 							function(res) {
-								vm.downloadURL = window.serverPath + res.data.data;
+								vm.downloadURL = window.serverUploadPath + res.data;
 							}, function(error) {
 								alert("上传失败");
-							}, function() {
-
 							});
 		}
 
