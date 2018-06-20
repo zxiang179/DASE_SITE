@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,8 +40,10 @@ public class TeacherService {
 
 	private final static String PICTURES = "pictures";
 
+	private final static String ATTACH = "attach";
+
 	private Gson gson = new GsonBuilder().create();
-	
+
 	private Gson gsonToHtml = new GsonBuilder().disableHtmlEscaping().create();
 
 	/**
@@ -58,28 +62,28 @@ public class TeacherService {
 			teacher.setPict_url(session.getAttribute("pictureURL").toString());
 			session.removeAttribute("pictureURL");
 		}
-		if(teacherObj.get("briefInfo")!=null){
+		if (teacherObj.get("briefInfo") != null) {
 			String briefInfo = gson.toJson(teacherObj.get("briefInfo"));
 			teacher.setBriefInfo(briefInfo);
 		}
-		if(teacherObj.get("specInfo")!=null){
+		if (teacherObj.get("specInfo") != null) {
 			String specInfo = gsonToHtml.toJson(teacherObj.get("specInfo").toString());
 			teacher.setSpecInfo(specInfo);
 		}
-		if(teacherObj.get("papers")!=null){
+		if (teacherObj.get("papers") != null) {
 			String papers = gsonToHtml.toJson(teacherObj.get("papers").toString());
 			teacher.setPapers(papers);
 		}
-		if(teacherObj.get("name")!=null){
+		if (teacherObj.get("name") != null) {
 			teacher.setName(teacherObj.get("name").toString());
 		}
 		teacher.setType(1);
 		teacher = teacherDao.save(teacher);
 	}
-	
-	private String changeCodeType(String specInfo){
+
+	private String changeCodeType(String specInfo) {
 		try {
-			return new String(specInfo.getBytes(),"utf-8");
+			return new String(specInfo.getBytes(), "utf-8");
 		} catch (UnsupportedEncodingException e) {
 			return null;
 		}
@@ -91,17 +95,16 @@ public class TeacherService {
 	 * @param size
 	 *            每页多少条记录
 	 **/
-	public Page<Teacher> searchTeacherList(int current, int size , final  int type) {
+	public Page<Teacher> searchTeacherList(int current, int size, final int type) {
 		Pageable pageable = new PageRequest(current, size, new Sort(Sort.Direction.DESC, "id"));
 		Page<Teacher> pages = teacherDao.findAll(new Specification<Teacher>() {
 			@Override
-			public Predicate toPredicate(Root<Teacher> root,
-					CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<Teacher> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				Predicate p = criteriaBuilder.equal(root.get("type").as(Integer.class), type);
 				query.where(criteriaBuilder.and(p));
 				return query.getRestriction();
 			}
-		},pageable);
+		}, pageable);
 		return pages;
 	}
 
@@ -150,18 +153,56 @@ public class TeacherService {
 		File file = new File(filePath);
 		FileInputStream fis = null;
 		byte[] data = null;
-        try {
+		try {
 			fis = new FileInputStream(file);
 			long size = file.length();
-	        byte[] temp = new byte[(int) size];
-	        fis.read(temp, 0, (int) size);
-	        fis.close();
-	        data = temp;
-	        //将IO流通过Base64
-	        data = Base64.encodeBase64(data);  
+			byte[] temp = new byte[(int) size];
+			fis.read(temp, 0, (int) size);
+			fis.close();
+			data = temp;
+			// 将IO流通过Base64
+			data = Base64.encodeBase64(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return data;
+	}
+
+	public Map<String, Object> saveAttachFile(MultipartFile _file, HttpSession session) {
+		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+		String realPath = session.getServletContext().getRealPath("uploads");
+		OutputStream os = null;
+		String originalFileName = _file.getOriginalFilename();
+		String fileName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+		String suffix = originalFileName.substring(originalFileName.lastIndexOf("."));
+		String filePath = realPath + File.separator + ATTACH + File.separator + fileName + uuid.substring(0, 5)
+				+ suffix;
+		File file = new File(filePath);
+		if (!file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		}
+		InputStream fileStream = null;
+		try {
+			fileStream = _file.getInputStream();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			os = new FileOutputStream(file);
+			byte[] bs = new byte[1024 * 2];
+			int len;
+			while ((len = fileStream.read(bs)) != -1) {
+				os.write(bs, 0, len);
+			}
+			os.close();
+			fileStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Map<String,Object> res= new HashMap<>();
+		res.put("data", "uploads/attach/" + fileName + uuid.substring(0, 5) + suffix);
+		return res;
 	}
 }

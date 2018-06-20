@@ -15,9 +15,9 @@
     
     <div data-ui="pageBanner" class="J_pageBanner"><img src="../../static/cache/1.jpg"></div>
 
-		<div class="person container">
-		    <ul>
-		        <li ng-repeat="teacher in teachers" class="row" style="padding:0px;margin-top:20px;">
+		<div class="person col-md-12">
+		    <ul class="col-md-12">
+		        <li ng-repeat="teacher in teachers" class="row col-md-12 col-sm-12" style="padding:0px;margin-top:20px;">
 		            <div class="col-md-12 row" style="padding:0px;">
 							<div class="col-sm-4 pull-left">
 						        <img id="showImg" class="img-responsive" src="{{teacher.picture}}" style="width:150px; height: 200px;margin:0 auto;display:block;"
@@ -125,8 +125,8 @@
             });
 
 
-            app.appendChild(titleStyle1);
-            app.appendChild(textList);
+            //app.appendChild(titleStyle1);
+            //app.appendChild(textList);
 
             jc.uiUpdate();
 

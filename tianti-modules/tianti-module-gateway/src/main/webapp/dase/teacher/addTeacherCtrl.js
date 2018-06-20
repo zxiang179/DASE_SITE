@@ -19,33 +19,51 @@
 		vm.chooseFile = chooseFile;
 		vm.imageChange = imageChange;
 		vm.getImage = getImage;
+		vm.submitAttachFile = submitAttachFile;
+		vm.copyToClipBoard = copyToClipBoard;
 
 		init();
-		function init(){
-//			var ueSpecInfo = UE.getEditor('specInfo');
-//			var uePapers = UE.getEditor('papers');
+		function init() {
+			// var ueSpecInfo = UE.getEditor('specInfo');
+			// var uePapers = UE.getEditor('papers');
 			var teacherid = window.location.search.split("=")[1];
-			if(teacherid != null)
-				$http({
-						url : window.server+"tianti-module-interface/teacher/teacher/"+teacherid,
-						method : 'get',
-					}).success(function(res) {
-						vm.teacher = res;
-						vm.teacher.briefInfo = JSON.parse(vm.teacher.briefInfo);
-						getImage(res.pict_url);
-						ueSpecInfo.ready(function() {
-						    //设置编辑器的内容
-							ueSpecInfo.setContent(vm.teacher.specInfo.substring(1,vm.teacher.specInfo.length-1));
-						});
-						uePapers.ready(function() {
-						    //设置编辑器的内容
-							uePapers.setContent(vm.teacher.papers.substring(1,vm.teacher.papers.length-1));
-						});
-						
-				});
-			
+			if (teacherid != null)
+				$http(
+						{
+							url : window.server
+									+ "tianti-module-interface/teacher/teacher/"
+									+ teacherid,
+							method : 'get',
+						})
+						.success(
+								function(res) {
+									vm.teacher = res;
+									vm.teacher.briefInfo = JSON
+											.parse(vm.teacher.briefInfo);
+									getImage(res.pict_url);
+									ueSpecInfo
+											.ready(function() {
+												// 设置编辑器的内容
+												ueSpecInfo
+														.setContent(vm.teacher.specInfo
+																.substring(
+																		1,
+																		vm.teacher.specInfo.length - 1));
+											});
+									uePapers
+											.ready(function() {
+												// 设置编辑器的内容
+												uePapers
+														.setContent(vm.teacher.papers
+																.substring(
+																		1,
+																		vm.teacher.papers.length - 1));
+											});
+
+								});
+
 		}
-		
+
 		function cancel() {
 			vm.file = null;
 		}
@@ -63,9 +81,6 @@
 			document.getElementById("myForm").reset();
 		}
 
-
-		
-		
 		function submitImage() {
 			var param = {};
 			param.picture = vm.file;
@@ -73,7 +88,8 @@
 			Upload
 					.upload(
 							{
-								url : window.server+"tianti-module-interface/teacher/upload-picture",
+								url : window.server
+										+ "tianti-module-interface/teacher/upload-picture",
 								data : param,
 								method : 'post',
 								arrayKey : ''
@@ -86,19 +102,50 @@
 					});
 		}
 
+		function submitAttachFile() {
+			var param = {};
+			param.attachFile = vm.afile;
+			Upload
+					.upload(
+							{
+								url : window.server
+										+ "tianti-module-interface/teacher/upload-attach-file",
+								data : param,
+								method : 'post',
+								arrayKey : ''
+							}).then(
+							function(res) {
+								vm.downloadURL = window.serverPath + res.data.data;
+							}, function(error) {
+								alert("上传失败");
+							}, function() {
+
+							});
+		}
+
+		function copyToClipBoard() {
+			var Url2 = vm.downloadURL;
+			var oInput = document.createElement('input');
+			oInput.value = Url2;
+			document.body.appendChild(oInput);
+			oInput.select(); // 选择对象
+			document.execCommand("Copy"); // 执行浏览器复制命令
+			oInput.className = 'oInput';
+			oInput.style.display = 'none';
+			return;
+		}
+		;
+
 		function submit() {
-//			var teacherJson = JSON.stringify(vm.teacher);
-//			console.log(teacherJson)
 			vm.teacher.specInfo = ueSpecInfo.getContent();
 			vm.teacher.papers = uePapers.getContent();
-			$http(
-					{
-						url : window.server+"tianti-module-interface/teacher/save",
-						method : 'POST',
-						data : {
-							'teacherJson' : vm.teacher
-						}
-					}).success(function(res) {
+			$http({
+				url : window.server + "tianti-module-interface/teacher/save",
+				method : 'POST',
+				data : {
+					'teacherJson' : vm.teacher
+				}
+			}).success(function(res) {
 				alert('保存成功')
 			});
 		}
@@ -107,24 +154,27 @@
 			preImg(sourceId, target_Id);
 		}
 
-	
 		function getImage(picturename) {
 			var params = {};
-			
+
 			params.picturename = picturename;
 			$http(
 					{
-						url : window.server+"tianti-module-interface/teacher/picture",
+						url : window.server
+								+ "tianti-module-interface/teacher/picture",
 						method : 'GET',
 						params : params,
 						headers : {
 							'responseType' : 'arraybuffer'
 						}
-					}).success(function(res) {
-						document.getElementById('showImg').src = 'data:image/jpeg;base64,'+res;
-			});
+					})
+					.success(
+							function(res) {
+								document.getElementById('showImg').src = 'data:image/jpeg;base64,'
+										+ res;
+							});
 		}
-		
+
 		function getFileUrl(sourceId) {
 			var url;
 			if (navigator.userAgent.indexOf("MSIE") >= 1) { // IE
@@ -144,7 +194,7 @@
 		 */
 		function preImg(sourceId, targetId) {
 			var url = getFileUrl(sourceId);
-			
+
 			var imgPre = document.getElementById(targetId);
 			imgPre.src = url;
 		}

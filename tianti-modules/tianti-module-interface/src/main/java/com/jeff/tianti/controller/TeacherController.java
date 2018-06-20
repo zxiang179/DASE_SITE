@@ -1,6 +1,7 @@
 package com.jeff.tianti.controller;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,7 +36,7 @@ public class TeacherController {
 	@RequestMapping(value = "/teacher-list", method = RequestMethod.GET)
 	@ResponseBody
 	public Page<Teacher> searchTeacherList(@RequestParam int current, @RequestParam int size, @RequestParam int type) {
-		return teacherService.searchTeacherList(current, size,type);
+		return teacherService.searchTeacherList(current, size, type);
 	}
 
 	@RequestMapping(value = "/teacher/{id}", method = RequestMethod.GET)
@@ -55,7 +56,13 @@ public class TeacherController {
 		}
 	}
 
-	@RequestMapping(value = "/picture", method = RequestMethod.GET,produces = MediaType.APPLICATION_OCTET_STREAM_VALUE )
+	@RequestMapping(value = "/upload-attach-file", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String,Object> saveAttachFile(MultipartHttpServletRequest request) {
+		return teacherService.saveAttachFile(request.getFile("attachFile"), request.getSession());
+	}
+
+	@RequestMapping(value = "/picture", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public byte[] getPicture(HttpServletRequest request, @RequestParam String picturename) {
 		return teacherService.getPicture(picturename, request);
 	}

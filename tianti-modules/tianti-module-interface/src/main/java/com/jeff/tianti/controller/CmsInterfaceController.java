@@ -41,6 +41,7 @@ public class CmsInterfaceController {
 	@Autowired
 	private ArticleService articleService;
 
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	/**
 	 * 获取栏目列表
 	 * 
@@ -265,7 +266,6 @@ public class CmsInterfaceController {
 		String columnId = request.getParameter("columnId");
 		String articleDateStr = request.getParameter("articleDate");
 		String orderNoStr = request.getParameter("orderNo");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Article preArticle = null;
 		Date articleDate = null;
 		Integer orderNo = null;
