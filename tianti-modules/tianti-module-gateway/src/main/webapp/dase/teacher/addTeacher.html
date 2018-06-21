@@ -10,12 +10,22 @@
 <script type="application/x-javascript">
 	
 	
+	
+	
+	
+	
+	
 	 addEventListener("load", function () {
         setTimeout(hideURLbar, 0);
     }, false);
     function hideURLbar() {
         window.scrollTo(0, 1);
     } 
+
+
+
+
+
 
 
 </script>
@@ -38,9 +48,9 @@ body {
 </style>
 </head>
 <body ng-app="teacherApp" ng-controller="AddTeacherCtrl">
-	<div class="col-md-offset-1 col-md-10" width="80%">
+	<div class="col-md-offset-1 col-md-10" width="80%" style="margin-top:50px;">
 		<form class="form-inline" id="form">
-			<div class="col-md-3">
+			<div class="col-md-3" style="position: fixed;">
 				<img id="showImg" class="img-responsive" src="{{teacher.pict_url}}"
 					style="width: 150px; height: 200px; margin: 0 auto; display: block;"
 					ng-click="chooseFile()" /> <br> <br> <input name="file"
@@ -48,12 +58,33 @@ body {
 					ng-model="file" ng-show="false" ngf-max-size="1MB"
 					accept="image/jpeg,image/jpg,image/png"
 					ng-change="imageChange('hiddenFile','showImg')">
-				<button class="btn btn-primary" ng-click="chooseFile()">选择照片</button>
-				<!-- <label ng-show="file!=null" ng-bind="file.name"></label> -->
-				<button class="btn btn-default" ng-click="submitImage()">上传</button>
-				<button class="btn btn-default" ng-click="cancel()">取消</button>
+				<div class="text-center">
+					<label style="margin-button: 30px;">图片建议尺寸为150px *
+						200px，比例必须为3:4</label>
+					<div>
+						<button class="btn btn-primary" ng-click="chooseFile()">选择照片</button>
+						<!-- <label ng-show="file!=null" ng-bind="file.name"></label> -->
+						<button class="btn btn-default" ng-click="submitImage()">上传</button>
+						<button class="btn btn-default" ng-click="cancel()">取消</button>
+					</div>
+				</div>
+				<br> <br>
+				<div class="form-group" style="margin-top: 50px;">
+					<div class="control-label text-right"
+						style="float: left; height: 28px; vertical-align: middle;">
+						<p>上传文件</p>
+					</div>
+					<input class="col-md-7" name="file" style="float: left;"
+						data-ngf-select type="file" ng-model="afile" ngf-max-size="50MB">
+					<button class="btn btn-primary" style="float: left;"
+						ng-click="submitAttachFile()">上传</button>
+				</div>
+				<div ng-show="downloadURL != null">
+					<label ng-bind="'下载链接:'+downloadURL"></label>
+					<button class="btn btn-link" ng-click="copyToClipBoard()">复制下载链接</button>
+				</div>
 			</div>
-			<div class="col-md-9">
+			<div class="col-md-offset-4 col-md-8">
 				<div class="form-group" style="width: 70%; margin-right: 5%;">
 					<label class="col-md-3 control-label text-right" for="name"
 						style="margin-bottom: 20px;">姓名</label> <input type="text"
@@ -66,12 +97,12 @@ body {
 						ng-model="teacher.briefInfo.tel">
 				</div>
 				<br> <br>
-				<div class="form-group" style="width: 70%; margin-right: 5%;">
+				<!--<div class="form-group" style="width: 70%; margin-right: 5%;">
 					<label class="col-md-3 control-label text-right" for="officeHours">办公时间</label>
 					<input type="text" class="form-control col-md-6"
 						ng-model="teacher.briefInfo.officeHours">
 				</div>
-				<br> <br>
+				<br> <br> -->
 				<div class="form-group" style="width: 70%; margin-right: 5%;">
 					<label class="col-md-3 control-label text-right" for="email">电子邮箱</label>
 					<input type="email" class="form-control col-md-6"
@@ -105,24 +136,12 @@ body {
    			</script>
 					<!-- <textarea class="form-control col-md-6" rows="10" cols="54" ng-model="teacher.papers"></textarea> -->
 				</div>
+
 				<br> <br>
-				<div class="form-group" style="width: 70%; margin-right: 5%;">
-					<label class="col-md-3 control-label text-right" for="officeAddres">上传文件</label>
-					<input name="file" style="float:left;" data-ngf-select type="file" ng-model="afile"
-						ngf-max-size="50MB">
-					<button class="btn btn-primary" style="float:left;" ng-click="submitAttachFile()">上传</button>
-				</div>
-				<div ng-show="downloadURL != null">
-					<label>下载链接:{{downloadURL}}</label>
-					<button class="btn btn-link" ng-click="copyToClipBoard()">复制</button>
-				</div>
-				<br> <br>
-				<div class="row">
-					<button class="btn btn-primary col-md-offset-3" ng-click="submit()">保存</button>
+				<div class="row text-center" style="margin-bottom: 50px;">
+					<button class="btn btn-primary" ng-click="submit()">保存</button>
 					<button class="btn btn-default col-md-offset-1" ng-click="reset()">取消</button>
 				</div>
-
-
 			</div>
 		</form>
 
