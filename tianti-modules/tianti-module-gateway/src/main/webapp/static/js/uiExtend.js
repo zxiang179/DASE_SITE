@@ -410,7 +410,7 @@ jc.uiExtend("banner", {
 		var _this = this;
 		this.getTemplate(data, function(html) {
 			_this.$element.html(html);
-			$("#" + this.id).carousel({
+			$(".carousel.slide").carousel({
 				pause : "hover",
 				interval : 6000
 			});
