@@ -118,7 +118,7 @@ jc
 						html += '<span class="icon-bar"></span>';
 						html += '<span class="icon-bar"></span>';
 						html += '</button>';
-						html += '<a class="navbar-brand" style="margin-left:0px; href="#page-top"><img class="img-responsive" src="../../static/images/logo1.png" style="float: left;margin-top:-3px" alt=""><img class="img-responsive" style="margin-left: 45px" src="../../static/images/logo.png" alt=""></a>';
+						html += '<a class="navbar-brand" style="margin-left:0px; href="#page-top"><img class="img-responsive xh" src="../../static/images/logo1.png" style="float: left;" alt=""><img class="img-responsive" style="margin-left: 45px" src="../../static/images/logo.png" alt=""></a>';
 						html += '</div>';
 						html += '<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">';
 						html += '<ul class="nav navbar-nav navbar-right">';
@@ -266,18 +266,20 @@ jc
 						html += '<div class="row">';
 
 						html += '<div class="col-md-4 col-sm-12">';
-						html += '<p class="mt20"><i class="icon"></i>地址：上海市普陀区中山北路3663号数学馆</p>'
-						html += '<p><i class="icon"></i>邮箱： dase@dase.ecnu.edu.cn</p>'
+
+
+						html += '<p class="mt20"><i class="icon"></i>地址：上海市普陀区中山北路3663号数学馆</p>';
+						html += '<p><i class="glyphicon glyphicon-paperclip"></i>邮编： 200333</p>';
+						html += '<p><i class="icon"></i>邮箱： dase@dase.ecnu.edu.cn</p>';
 						html += '</div>';
 
 						html += '<div class="col-md-3 col-sm-12">';
-						
+
 						html += '</div>';
 
 						html += '<div class="col-md-3 col-sm-12">';
-						
+
 						html += '</div>';
-						
 
 						html += '<div class="col-md-2 col-sm-12">';
 						html += '<div class="mt20 text-center">';
@@ -346,7 +348,7 @@ jc.uiExtend("banner", {
 		var _this = this;
 		this.getTemplate(data, function(html) {
 			_this.$element.html(html);
-			$("#" + this.id).carousel({
+			$(".carousel.slide").carousel({
 				pause : "hover",
 				interval : 6000
 			});
