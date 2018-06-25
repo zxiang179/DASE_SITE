@@ -27,7 +27,10 @@
 
         html += '<div class="item ' + (i == 0 ? 'active' : '') + '">';
         var coverImageUrl = list[i].coverImageUrl;
+//        html += '<img src="' + (coverImageUrl ? window.serverUploadPath + coverImageUrl : "") + '" />';
+        html += '<a href="' + list[i].href + '">';
         html += '<img src="' + (coverImageUrl ? window.serverUploadPath + coverImageUrl : "") + '" />';
+        html += '</a>';
         html += '</div>';
     }
 
