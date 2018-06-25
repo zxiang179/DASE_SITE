@@ -191,16 +191,6 @@ jc
 									+ (i == 0 ? 'style="display:none;"' : "")
 									+ '>';
 
-							/*
-							 * html += '<li><a href="javascript:;">学校简介</a></li>';
-							 * html += '<li><a href="javascript:;">学校领导</a></li>';
-							 * html += '<li><a href="javascript:;">校长寄语</a></li>';
-							 * html += '<li><a href="javascript:;">组织机构</a></li>';
-							 * html += '<li><a href="javascript:;">办学成就</a></li>';
-							 * html += '<li><a href="javascript:;">领导关怀</a></li>';
-							 * html += '<li><a href="javascript:;">校园风光</a></li>';
-							 */
-
 							html += '</ul>';
 
 							html += '</li>';
