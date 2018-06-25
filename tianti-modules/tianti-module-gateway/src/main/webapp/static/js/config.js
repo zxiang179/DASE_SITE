@@ -41,6 +41,7 @@ jc.require.success = function () {
 window.routerList = {
     index: window.root + "index/index.html",
     menuAndTextList: window.root + "menuAndTextlist/menuAndTextlist.html",
+    menuAndTextlist: window.root + "menuAndTextlist/menuAndTextlist.html",
     menuAndDetail: window.root + "menuAndDetail/menuAndDetail.html",
     //新增老师
 //    menuAndTeacherList:window.root+"teacher/single_teacher.html"
