@@ -27,16 +27,24 @@
 			// var ueSpecInfo = UE.getEditor('specInfo');
 			// var uePapers = UE.getEditor('papers');
 			var teacherid = window.location.search.split("=")[1];
+			var params = {
+				"uuid" : teacherid
+			};
 			if (teacherid != null)
 				$http(
 						{
 							url : window.server
-									+ "tianti-module-interface/teacher/teacher/"
-									+ teacherid,
+									+ "tianti-module-interface/teacher/teacher/uuid",
 							method : 'get',
+							params : params
 						})
 						.success(
 								function(res) {
+									if(res == ""){
+										vm.teacher = {};
+										vm.teacher.pict_url = "default.jpg";
+										return;
+									}
 									vm.teacher = res;
 									vm.teacher.briefInfo = JSON
 											.parse(vm.teacher.briefInfo);
@@ -94,9 +102,9 @@
 								method : 'post',
 								arrayKey : ''
 							}).then(function(data) {
-						alert("success");
+						alert("图片上传成功，保存后生效！");
 					}, function(error) {
-						alert("error");
+						alert("上传失败！");
 					}, function() {
 
 					});
@@ -105,20 +113,16 @@
 		function submitAttachFile() {
 			var param = {};
 			param.attachFile = vm.afile;
-			Upload
-					.upload(
-							{
-								url : window.serverUploadPath
-										+ "/upload/uploadAttach",
-								data : param,
-								method : 'post',
-								arrayKey : ''
-							}).then(
-							function(res) {
-								vm.downloadURL = window.serverUploadPath + res.data;
-							}, function(error) {
-								alert("上传失败");
-							});
+			Upload.upload({
+				url : window.serverUploadPath + "/upload/uploadAttach",
+				data : param,
+				method : 'post',
+				arrayKey : ''
+			}).then(function(res) {
+				vm.downloadURL = window.serverUploadPath + res.data;
+			}, function(error) {
+				alert("上传失败");
+			});
 		}
 
 		function copyToClipBoard() {
@@ -135,6 +139,7 @@
 		;
 
 		function submit() {
+			vm.teacher.id = window.location.search.split("=")[1];
 			vm.teacher.specInfo = ueSpecInfo.getContent();
 			vm.teacher.papers = uePapers.getContent();
 			$http({

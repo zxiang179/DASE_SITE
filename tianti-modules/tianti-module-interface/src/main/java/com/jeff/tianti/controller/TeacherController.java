@@ -45,6 +45,32 @@ public class TeacherController {
 		return teacherService.searchTeacher(id);
 	}
 
+	@RequestMapping(value = "/teacher/uuid", method = RequestMethod.GET)
+	@ResponseBody
+	public Teacher searchTeacher(@RequestParam String uuid) {
+		return teacherService.searchTeacher(uuid);
+	}
+
+	/**
+	 * 初始化uuid到id的映射
+	 * @return
+	 */
+	@RequestMapping(value = "/teacher/init", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> init() {
+		return teacherService.initKeyMap();
+	}
+
+	/**
+	 * 获取uuid到id的映射
+	 * @return
+	 */
+	@RequestMapping(value = "/teacher/mapping", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> mapping() {
+		return teacherService.getMapping();
+	}
+
 	@RequestMapping(value = "/upload-picture", method = RequestMethod.POST)
 	@ResponseBody
 	public void savePicture(MultipartHttpServletRequest request) {
@@ -58,7 +84,7 @@ public class TeacherController {
 
 	@RequestMapping(value = "/upload-attach-file", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String,Object> saveAttachFile(MultipartHttpServletRequest request) {
+	public Map<String, Object> saveAttachFile(MultipartHttpServletRequest request) {
 		return teacherService.saveAttachFile(request.getFile("attachFile"), request.getSession());
 	}
 

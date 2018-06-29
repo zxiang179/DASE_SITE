@@ -19,8 +19,8 @@ window.static = window.ctx + "static/";
 window.notImgUrl = window.static + "images/img_null.png";
 
 //window.server = "http://58.198.176.86:80/";
-//window.server = "http://dase.ecnu.edu.cn/";
-window.server = "http://localhost:8080/";
+window.server = "http://dase.ecnu.edu.cn/";
+//window.server = "http://localhost:8080/";
 window.serverPath = window.server + "tianti-module-interface/";
 //后台上传的图片地址
 window.serverUploadPath = window.server+"dase-module-admin"

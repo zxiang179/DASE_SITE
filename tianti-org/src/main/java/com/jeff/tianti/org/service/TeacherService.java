@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -46,18 +47,56 @@ public class TeacherService {
 
 	private Gson gsonToHtml = new GsonBuilder().disableHtmlEscaping().create();
 
+	// 为了防止教师的ID被用户直接使用，将每个ID映射成UUID返回到前端，使用keyMap来记录映射关系
+	private Map<String, Long> keyMap;
+
+	private Sort sortName = new Sort("name");
+
 	/**
-	 * @param teacher
-	 *            接受前端传来的老师
+	 * 初始化keyMap
+	 */
+	@Autowired
+	public Map<String, Object> initKeyMap() {
+		Map<String, Object> res = new HashMap<>();
+		List<Teacher> teachers = teacherDao.findAll(sortName);
+		keyMap = new HashMap<>();
+		String key;
+		for (Teacher t : teachers) {
+			key = UUID.randomUUID().toString().replaceAll("-", "");
+			keyMap.put(key, t.getId());
+			res.put(t.getName(), key);
+		}
+		return res;
+	}
+
+	public Map<String, Object> getMapping() {
+		Map<String, Object> res = new HashMap<>();
+		Teacher t;
+		for (String key : keyMap.keySet()) {
+			t = teacherDao.findById(keyMap.get(key));
+			res.put(t.getName(), key);
+		}
+		return res;
+	}
+
+	/**
+	 * 只有当id为xz时，才表示新增
+	 * 
+	 * @param teacherJson
+	 *            前端传来的老师，为json格式
 	 **/
 	public void save(String teacherJson, HttpSession session) {
 		// TODO: 根据是否有id来判断是添加还是修改
 		Map<String, Object> teacherObj = (Map<String, Object>) gson.fromJson(teacherJson, Map.class).get("teacherJson");
 		Teacher teacher = new Teacher();
-		if (teacherObj.get("id") != null) {
-			teacher.setId(Long.valueOf(teacherObj.get("id").toString().split("\\.")[0]));
-			teacher.setPict_url(teacherDao.findById(teacher.getId()).getPict_url());
+		if (!teacherObj.get("id").toString().equals("xz") && keyMap.get(teacherObj.get("id").toString()) == null)
+			return;
+		else if (keyMap.get(teacherObj.get("id").toString()) != null) {
+			long id = keyMap.get(teacherObj.get("id").toString());
+			teacher.setId(id);
+			teacher.setPict_url(teacherDao.findById(id).getPict_url());
 		}
+
 		if (session.getAttribute("pictureURL") != null) {
 			teacher.setPict_url(session.getAttribute("pictureURL").toString());
 			session.removeAttribute("pictureURL");
@@ -81,14 +120,6 @@ public class TeacherService {
 		teacher = teacherDao.save(teacher);
 	}
 
-	private String changeCodeType(String specInfo) {
-		try {
-			return new String(specInfo.getBytes(), "utf-8");
-		} catch (UnsupportedEncodingException e) {
-			return null;
-		}
-	}
-
 	/**
 	 * @param current
 	 *            当前页
@@ -96,7 +127,7 @@ public class TeacherService {
 	 *            每页多少条记录
 	 **/
 	public Page<Teacher> searchTeacherList(int current, int size, final int type) {
-		Pageable pageable = new PageRequest(current, size, new Sort(Sort.Direction.DESC, "id"));
+		Pageable pageable = new PageRequest(current, size, sortName);
 		Page<Teacher> pages = teacherDao.findAll(new Specification<Teacher>() {
 			@Override
 			public Predicate toPredicate(Root<Teacher> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -117,6 +148,18 @@ public class TeacherService {
 	public Teacher searchTeacher(long id) {
 		Teacher teacher = teacherDao.findOne(id);
 		return teacher;
+	}
+
+	/**
+	 * 根据uuid查找老师
+	 * 
+	 * @param uuid
+	 * @return
+	 */
+	public Teacher searchTeacher(String uuid) {
+		if (keyMap.get(uuid) != null)
+			return searchTeacher(keyMap.get(uuid));
+		return null;
 	}
 
 	/**
@@ -201,7 +244,7 @@ public class TeacherService {
 			e.printStackTrace();
 		}
 
-		Map<String,Object> res= new HashMap<>();
+		Map<String, Object> res = new HashMap<>();
 		res.put("data", "uploads/attach/" + fileName + uuid.substring(0, 5) + suffix);
 		return res;
 	}
