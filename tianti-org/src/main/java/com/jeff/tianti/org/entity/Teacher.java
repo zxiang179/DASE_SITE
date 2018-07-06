@@ -9,37 +9,49 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "org_teacher")
-public class Teacher{
-	
+public class Teacher {
+
 	private static final long serialVersionUID = 9063813830344067815L;
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	
-	//姓名
+
+	// 姓名
 	@Column(name = "name")
 	private String name;
-	
-	//照片路径
+
+	// 照片路径
 	@Column(name = "pict_url")
 	private String pict_url;
-	
-	//简介
-	@Column(name="brief_info",length=5240)
+
+	// 简介
+	@Column(name = "brief_info", length = 5240)
 	private String briefInfo;
-	
-	//详细信息
-	@Column(name="spec_info",length=5240)
+
+	// 详细信息
+	@Column(name = "spec_info", length = 5240)
 	private String specInfo;
-	
-	@Column(length=10240)
+
+	@Column(length = 10240)
 	private String papers;
-	
-	@Column(name="type")
+
+	@Column(name = "type")
 	private int type;
-	
-	public Teacher(){}
+
+	@Column(name = "pingyin")
+	private String pingyin;
+
+	public Teacher() {
+	}
+
+	public String getPingyin() {
+		return pingyin;
+	}
+
+	public void setPingyin(String pingyin) {
+		this.pingyin = pingyin;
+	}
 
 	public long getId() {
 		return id;
@@ -97,8 +109,4 @@ public class Teacher{
 		this.type = type;
 	}
 
-	
-	
-	
-	
 }

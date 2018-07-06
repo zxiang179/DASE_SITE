@@ -1,10 +1,12 @@
 package com.jeff.tianti.org.service;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,16 +53,49 @@ public class TeacherService {
 	// 为了防止教师的ID被用户直接使用，将每个ID映射成UUID返回到前端，使用keyMap来记录映射关系
 	private Map<String, Long> keyMap;
 
-	private Sort sortName = new Sort("name");
+	// private Sort sortName = new Sort("name");
+	private Sort sortPingyin = new Sort("pingyin");
+
+	@Autowired
+	public void loadKeyMap() {
+		ClassPathResource resource = new ClassPathResource("uuid-mapping.csv");
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(new FileInputStream(resource.getFile()), "UTF-8"))) {
+			String line = null;
+			String[] values;
+			String name;
+			String uuid;
+
+			// 查询出所有老师，并构建他们的姓名-id映射
+			List<Teacher> teachers = teacherDao.findAll(sortPingyin);
+			Map<String, Long> nameIdMap = new HashMap<>();
+			for (Teacher t : teachers)
+				nameIdMap.put(t.getName(), t.getId());
+
+			// 根据uuid-mapping.csv的uuid，构建teacher.id-uuid的映射
+			keyMap = new HashMap<>();
+			while ((line = br.readLine()) != null) {
+				values = line.split(",");
+				name = values[0];
+				uuid = values[1];
+				keyMap.put(uuid, nameIdMap.get(name));
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 初始化keyMap
 	 */
-	@Autowired
 	public Map<String, Object> initKeyMap() {
 		Map<String, Object> res = new HashMap<>();
-		List<Teacher> teachers = teacherDao.findAll(sortName);
-		keyMap = new HashMap<>();
+		List<Teacher> teachers = teacherDao.findAll(sortPingyin);
+		keyMap.clear();
 		String key;
 		for (Teacher t : teachers) {
 			key = UUID.randomUUID().toString().replaceAll("-", "");
@@ -87,14 +123,17 @@ public class TeacherService {
 	 **/
 	public void save(String teacherJson, HttpSession session) {
 		// TODO: 根据是否有id来判断是添加还是修改
+		boolean isNew = false;
 		Map<String, Object> teacherObj = (Map<String, Object>) gson.fromJson(teacherJson, Map.class).get("teacherJson");
 		Teacher teacher = new Teacher();
 		if (!teacherObj.get("id").toString().equals("xz") && keyMap.get(teacherObj.get("id").toString()) == null)
 			return;
-		else if (keyMap.get(teacherObj.get("id").toString()) != null) {
+		if (keyMap.get(teacherObj.get("id").toString()) != null) {
 			long id = keyMap.get(teacherObj.get("id").toString());
 			teacher.setId(id);
 			teacher.setPict_url(teacherDao.findById(id).getPict_url());
+		} else {
+			isNew = true;
 		}
 
 		if (session.getAttribute("pictureURL") != null) {
@@ -118,6 +157,10 @@ public class TeacherService {
 		}
 		teacher.setType(1);
 		teacher = teacherDao.save(teacher);
+		if (isNew) {// 添加了新老师，生成UUID并添加到keyMap中
+			String key = UUID.randomUUID().toString().replaceAll("-", "");
+			keyMap.put(key, teacher.getId());
+		}
 	}
 
 	/**
@@ -127,7 +170,7 @@ public class TeacherService {
 	 *            每页多少条记录
 	 **/
 	public Page<Teacher> searchTeacherList(int current, int size, final int type) {
-		Pageable pageable = new PageRequest(current, size, sortName);
+		Pageable pageable = new PageRequest(current, size, sortPingyin);
 		Page<Teacher> pages = teacherDao.findAll(new Specification<Teacher>() {
 			@Override
 			public Predicate toPredicate(Root<Teacher> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
