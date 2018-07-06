@@ -4,8 +4,8 @@
 	src: url('../fonts/icomoon.eot?#iefix') format('embedded-opentype'),
 		/* IE6-IE8 */ url('../fonts/icomoon.woff') format('woff'),
 		/* chrome��firefox */ url('../fonts/icomoon.ttf') format('truetype'),
-		/* chrome��firefox��opera��Safari, Android, iOS 4.2+*/ 
-		url('../fonts/icomoon.svg#ifont') format('svg'); /* IE9*/
+		/* chrome��firefox��opera��Safari, Android, iOS 4.2+*/  
+		 url('../fonts/icomoon.svg#ifont') format('svg'); /* IE9*/
 	/* iOS 4.1- */
 }
 
@@ -61,29 +61,17 @@ a.abtn.default {
 	color: #999;
 }
 
-@media screen and (min-width: 992px) {
-	.xh {
-		float: left;
-		margin-top: -3px;
-		width: auto !important;
-	}
-}
-
-@media screen and (max-width: 500px) {
-	.xh {
-		width: 38px !important;
-		float: left;
-		height: auto !important;
-		margin-top: 3px;
-		margin-left: 3px;
-	}
-}
-
 .xhm {
 	width: auto !important;
 }
 /* pc 的时候 */
 @media ( min-width : 768px) {
+	.xh {
+		float: left;
+		margin-top: -3px;
+		width: auto !important;
+	}
+
 	/* 头部样式改写 */
 	.J_header {
 		height: 50px;
@@ -164,6 +152,17 @@ a.abtn.default {
 
 /* mobile的时候 */
 @media ( max-width : 768px) {
+	.xh {
+		width: 38px !important;
+		float: left;
+		height: auto !important;
+		margin-top: 3px;
+		margin-left: 3px;
+	}
+	.J_detail img {
+		width: 100% !important;
+		height: auto !important;
+	}
 	/* 头部样式改写 */
 	.J_header {
 		height: 50px;
